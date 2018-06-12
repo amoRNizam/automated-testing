@@ -7,15 +7,17 @@ class TestPriceUa(unittest.TestCase):
 	driver = None
 	def setUp(self):
 		self.driver = webdriver.Firefox()
+		self.driver.set_window_size(1920,1080)
 		self.driver.implicitly_wait(60)
 	def test_filter(self):
 		#Зайти на yandex.ru
 		self.driver.get("http://yandex.ru")
 		#В разделе Маркет выбираю Сотовые телефоны
 		self.driver.find_element_by_link_text(u"Маркет").click()
-		hover = self.driver.find_element_by_xpath("html/body/div[1]/div/div[2]/noindex/ul/li[1]")
+		hover = self.driver.find_element_by_link_text(u"Электроника")
+		# hover = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]")
 		ActionChains(self.driver).move_to_element(hover).perform()
-		self.driver.find_element_by_xpath("html/body/div[1]/div/div[2]/noindex/ul/li[1]/div/div/a[1]").click()
+		self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]/div/div/a[1]").click()
 		#Захожу в росширенный поиск
 		self.driver.find_element_by_css_selector(r'.black').click()	
 		#Задаю параметры поиска
