@@ -1,56 +1,76 @@
 import unittest
 from selenium import webdriver
+import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import time
+
 class TestPriceUa(unittest.TestCase):
 	driver = None
 	def setUp(self):
-		self.driver = webdriver.Firefox()
-		self.driver.set_window_size(1920,1080)
+		self.driver = webdriver.Chrome()
+#		self.driver.set_window_size(1920,1080)
+		self.driver.maximize_window()
 		self.driver.implicitly_wait(60)
 	def test_filter(self):
 		#Зайти на yandex.ru
 		self.driver.get("http://yandex.ru")
 		#В разделе Маркет выбираю Сотовые телефоны
 		self.driver.find_element_by_link_text(u"Маркет").click()
-		hover = self.driver.find_element_by_link_text(u"Электроника")
-		# hover = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]")
+		#hover = self.driver.find_element_by_link_text(u"Электроника")
+		hover = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]/a")
 		ActionChains(self.driver).move_to_element(hover).perform()
+		time.sleep(2)
 		self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]/div/div/a[1]").click()
 		#Захожу в росширенный поиск
-		self.driver.find_element_by_css_selector(r'.black').click()	
+#		self.driver.find_element_by_css_selector(r'.black').click()
 		#Задаю параметры поиска
-		self.driver.find_element_by_id("f2142558003-1").send_keys('20000')
-		self.driver.find_element_by_css_selector('#f2142557926 span').click()
-		self.driver.find_element_by_id("f2142557926-1").send_keys('3')
-		self.driver.find_element_by_css_selector('#f1801946-1871375').click()
-		self.driver.find_element_by_css_selector('#f1801946-1871447').click()
-		self.driver.find_element_by_css_selector('#f1801946-1871499').click()
-		self.driver.find_element_by_css_selector('#f1801946-1871151').click()
-		self.driver.find_element_by_css_selector('#f1801946-11756910').click()
-		self.driver.find_element_by_css_selector(r'.b-gurufilters_submit-button').click()
-		#Проверка, что на странице 10 элементов
-		self.assertEqual(len(self.driver.find_elements_by_class_name('b-offers__info')), 10)
-		#Запоминаю первый телефон в списке
-		first = self.driver.find_element_by_css_selector('.results>tbody>tr>td>form>div>:first-child>div.b-offers__desc>h3>a').get_attribute('id')
+		price = self.driver.find_element_by_name("Цена до") #Найдем элемент "цена до..."
+		self.driver.execute_script("arguments[0].scrollIntoView();", price) # Скролинг до эелемента
+		self.driver.find_element_by_name("Цена до").send_keys(u"20000") # Установим значение цены
+		diagonally = self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[9]/fieldset/ul/li[2]/div/label/div")
+		self.driver.execute_script("arguments[0].scrollIntoView();", diagonally)  # Скролинг до эелемента
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[9]/fieldset/ul/li[2]/div/label/div").click()
+		manufacturer = self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset")
+		self.driver.execute_script("arguments[0].scrollIntoView();", manufacturer)
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[1]/div/a/label/div").click()
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[2]/div/a/label/div").click()
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[5]/div/a/label/div").click()
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[10]/div/a/label/div").click()
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[11]/div/a/label/div").click()
+		# Проверка, что на странице 10 элементов
+		time.sleep(3)
+		self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-cell2")), 5)
+		# Запоминаю первый телефон в списке
+		first = self.driver.find_element_by_xpath("/html/body/div[1]/div[4]/div[2]/div[1]/div[2]/div/div[1]/div[1]").get_attribute("data-id")
 		print(first)
-		#Изменяю сортировку на другую(популярность или новизна)
-		self.driver.find_element_by_xpath("html/body/div[3]/table/tbody/tr[2]/td[2]/div/ul[2]/li[4]/a").click()
-		#Список телефонов уже с новой сортировкой
-		items = self.driver.find_elements_by_xpath("//div[@class='b-offers b-offers_type_guru'] /div[@class='b-offers__desc'] /h3 /a")
+		# Изменяю сортировку на другую(популярность или новизна)
+		self.driver.find_element_by_xpath("/html/body/div[1]/div[4]/div[1]/div[2]/div[1]/div[1]/div[7]").click()
+		time.sleep(3)
+		# Список телефонов уже с новой сортировкой
+		items = self.driver.find_elements_by_class_name("n-snippet-cell2")
 		#Поиск ранее запомненного телефона
 		for list in items:
-			if list.get_attribute('id')!=first: 
+			if list.get_attribute("data-id")!=first:
 				continue
 			list.click()
 			break
-		else:	
-			self.driver.find_element_by_css_selector('.b-pager__next').click()
-	#def tearDown(self):
-		#self.driver.close()
-if __name__ == "__main__" :
-	unittest.main()
+		else:
+			print("Не найден элемент")
+			#self.driver.find_element_by_css_selector('.b-pager__next').click()
+		#Выводим значение оценки
+		rating = self.driver.find_element_by_class_name("rating__value").text
+		print(rating)
+#			self.driver.find_element_by_css_selector('.b-pager__next').click()
+
+	def tearDown(self):
+		self.driver.close()
+
+#if __name__ == "__main__" :
+#	unittest.main()
+if __name__ == "__main__":
+#	with open("C:/test.log", "w") as logf:
+	unittest.TextTestRunner(verbosity=2, stream=logf).run(suite())
 
 # Задание
 #1. Открыть браузер и развернуть на весь экран.
