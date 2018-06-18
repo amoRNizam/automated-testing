@@ -1,6 +1,5 @@
 import unittest
 from selenium import webdriver
-import time
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
 import time
@@ -47,7 +46,10 @@ class TestBuySitilink(unittest.TestCase):
             actions.move_to_element(graphicsCard).click().perform()
         except Exception:
             print(sys.exc_info()[1])
+
         #Установить параметры фильтра:
+        price = self.driver.find_element_by_id()
+
 
 
     def tearDown(self):
