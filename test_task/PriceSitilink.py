@@ -48,8 +48,17 @@ class TestBuySitilink(unittest.TestCase):
             print(sys.exc_info()[1])
 
         #Установить параметры фильтра:
-        price = self.driver.find_element_by_id()
-
+        try:
+            priceMax = self.driver.find_element_by_name("price_max")
+        except Exception:
+            print(sys.exc_info()[1])
+        time.sleep(3)
+#        self.driver.execute_script("arguments[0].scrollIntoView();", priceMax)
+#        actions.move_to_element(priceMax).send_keys(u"35000").perform()
+        priceMax.send_keys(keys.Backspace)
+#        priceMax.click()
+#        time.sleep(4)
+        priceMax.send_keys(u"35000")
 
 
     def tearDown(self):

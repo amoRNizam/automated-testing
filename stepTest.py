@@ -56,17 +56,18 @@ class TestBuySitilink(unittest.TestCase):
         except Exception:
             print(sys.exc_info()[1])
         #Производитель*******
-        Acer = self.driver.find_element_by_id("7893318_267101")
-        Apple = self.driver.find_element_by_id("7893318_153043")
-        Asus = self.driver.find_element_by_id("7893318_152863")
-        self.driver.execute_script("arguments[0].scrollIntoView();", Acer)
         try:
-            Acer = wait.until(EC.element_to_be_clickable((By.ID, "7893318_267101")))
-            actions.move_to_element(Acer).click().perform()
-            Apple = self.driver.find_element_by_id("7893318_153043").click()
-            Asus = self.driver.find_element_by_id("7893318_152863").click()
+            element = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/legend")
+            self.driver.execute_script("arguments[0].scrollIntoView();", element) #Скролим до производителей
 
-#            manufacturer = wait.until(EC.element_to_be_clickable((By.ID, Acer)))
+            Acer = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[1]/div/a/label").click()
+            Apple = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[1]/div/a/label").click()
+            Asus = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[4]/div/a/label").click()
+
         except Exception:
             print(sys.exc_info()[1])
 

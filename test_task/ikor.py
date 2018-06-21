@@ -48,30 +48,41 @@ class TestPriceUa(unittest.TestCase):
 			actions.move_to_element(phone_link).click().perform()
 			print("Item Clicked")
 		except:
-			print("Mouse Hover failed on element")
+			print("Error(Mouse Hover failed on element)")
 
 		#Задать параметры поиска в блоке фильтров
 		price = self.driver.find_element_by_name("Цена до") #Найдем элемент "цена до..."
 		self.driver.execute_script("arguments[0].scrollIntoView();", price) # Скролинг до эелемента
-		self.driver.find_element_by_name("Цена до").send_keys(u"20000") # Установим значение цены
+		price.send_keys(u"20000") # Установим значение цены
 
-		diagonally = self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[9]/fieldset/ul/li[2]/div/label/div")
-		self.driver.execute_script("arguments[0].scrollIntoView();", diagonally)  # Скролинг до эелемента
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[9]/fieldset/ul/li[2]/div/label/div").click()
+		diagonally = self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[10]/fieldset/ul/li[2]/div/label")
+		if diagonally is not None:
+			print("diagonaly found")
+			self.driver.execute_script("arguments[0].scrollIntoView();", diagonally)  # Скролинг до эелемента
+			diagonally.click()
+		else:
+			print("diagonally not found")
+			return False
+#		self.driver.execute_script("arguments[0].scrollIntoView();", diagonally)  # Скролинг до эелемента
+#		diagonally.click()
+		time.sleep(5)
 
 		manufacturer = self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset")
 		self.driver.execute_script("arguments[0].scrollIntoView();", manufacturer)
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[1]/div/a/label/div").click()
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[2]/div/a/label/div").click()
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[5]/div/a/label/div").click()
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[10]/div/a/label/div").click()
-		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[11]/div/a/label/div").click()
-		# Проверка, что на странице 5 элементов
+
+		time.sleep(5)
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[4]/fieldset/ul/li[1]/div/a/label").click()	# Apple
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[4]/fieldset/ul/li[3]/div/a/label").click()	# BQ
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[4]/fieldset/ul/li[5]/div/a/label").click()	# Huawei
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[4]/fieldset/ul/li[6]/div/a/label").click()	# LG
+		self.driver.find_element_by_xpath("//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[4]/fieldset/ul/li[8]/div/a/label").click()	# Nokia
+		# Проверка, что на странице 14 элементов
 		time.sleep(3)
-		self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-cell2")), 5)
+		self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-cell2")), 14)
 		# Запоминаю первый телефон в списке
 		first = self.driver.find_element_by_xpath("/html/body/div[1]/div[4]/div[2]/div[1]/div[2]/div/div[1]/div[1]").get_attribute("data-id")
 		print(first)
+		time.sleep(3)
 		# Изменяю сортировку на другую(популярность или новизна)
 		self.driver.find_element_by_xpath("/html/body/div[1]/div[4]/div[1]/div[2]/div[1]/div[1]/div[7]").click()
 		time.sleep(3)
@@ -81,10 +92,12 @@ class TestPriceUa(unittest.TestCase):
 		for list in items:
 			if list.get_attribute("data-id")!=first:
 				continue
-			list.click()
-			break
-		else:
-			print("Element not found")
+				print(list)
+				list.click()
+				break
+			else:
+				print("Error(items not found)")
+
 			#self.driver.find_element_by_css_selector('.b-pager__next').click()
 		#Выводим значение оценки
 		rating = self.driver.find_element_by_class_name("rating__value").text
