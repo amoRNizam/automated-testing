@@ -24,10 +24,10 @@ class TestBuySitilink(unittest.TestCase):
                              ignored_exceptions=[NoSuchElementException,
                                                  ElementNotVisibleException,
                                                  ElementNotSelectableException])
-        #Перейти по ссылке:
+        # 1. Перейти по ссылке:
         self.driver.get("https://market.yandex.ru/")
 
-        #Навести указатель на меню:
+        # Навести указатель на меню:
         try:
             computers = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[2]/a")
         except Exception:
@@ -37,7 +37,7 @@ class TestBuySitilink(unittest.TestCase):
         actions = ActionChains(self.driver)
         actions.move_to_element(computers).perform()
 
-        #Кликнуть на раздел с компьютерами:
+        # 2.Кликнуть на раздел с компьютерами:
         try:
             notebook = wait.until(EC.element_to_be_clickable((By.XPATH,
                                                               "/html/body/div[1]/div/div[2]/noindex/ul/li[2]/div/div/a[1]")))
@@ -46,19 +46,19 @@ class TestBuySitilink(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("There are no element")
 
-        #Установить параметры фильтра:
-        #Цена*******
+        # 3.Установить параметры фильтра:
+        # 3.1 Цена*******
         try:
             priceMax = wait.until(EC.element_to_be_clickable((By.NAME, "Цена до")))
             priceMax.send_keys(u"55000")
         except Exception:
             print(sys.exc_info()[1])
             self.fail("There are no element")
-        #Производитель*******
+        # 3.2 Производитель*******
         try:
             element = self.driver.find_element_by_xpath(
                 "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/legend")
-            self.driver.execute_script("arguments[0].scrollIntoView();", element) #Скролим до производителей
+            self.driver.execute_script("arguments[0].scrollIntoView();", element) #Скролим до выбора производителей
 
             Acer = self.driver.find_element_by_xpath(
                 "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[1]/div/a/label").click()
@@ -68,8 +68,28 @@ class TestBuySitilink(unittest.TestCase):
                 "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[3]/fieldset/ul/li[4]/div/a/label").click()
         except NoSuchElementException:
             self.fail("There are no element")
+        # 3.3 Диагональ экрана
+        try:
+            element = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[6]/fieldset/legend")
+            self.driver.execute_script("arguments[0].scrollIntoView();", element) #Скролим до выбора диагонали
 
+            Acer = self.driver.find_element_by_xpath(
+                "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[6]/fieldset/ul/li[1]/div/label").click()
+        except NoSuchElementException:
+            self.fail("There are no element")
 
+        # 4. Проверка, что на странице 13 элементов
+        self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-card2")), 13)
+
+        # 5. Запомним первый элемент в списке
+        try:
+            first = wait.until(EC.element_to_be_clickable((By.XPATH,
+                                                           "/html/body/div[1]/div[4]/div[2]/div[1]/div[2]/div/div[1]/div[1]")))\
+                .get_attribute("data-id")
+            print(first)
+        except NoSuchElementException:
+            self.fail("There are no element")
 #        actions.move_to_element(Acer).click().perform()
  #       actions.move_to_element(Apple).click().perform()
 #        actions.move_to_element(Asus).click().perform()
