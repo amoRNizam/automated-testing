@@ -79,6 +79,7 @@ class TestBuySitilink(unittest.TestCase):
         except NoSuchElementException:
             self.fail("There are no element")
 
+        time.sleep(3)
         # 4. Проверка, что на странице 13 элементов
         self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-card2")), 13)
 
