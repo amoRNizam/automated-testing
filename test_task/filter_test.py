@@ -1,12 +1,8 @@
 import unittest
+import sys, time
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-import time
-import sys
-# *****************
 from selenium.webdriver.common.by import By
-from traceback import print_stack
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import *
@@ -18,7 +14,7 @@ class TestFilter(unittest.TestCase):
         self.driver = webdriver.Chrome()
         self.driver.maximize_window()
         self.driver.implicitly_wait(10)
-        self.driver.set_script_timeout(10)
+
     def test_buy(self):
         # Определим ожидание:
         wait = WebDriverWait(self.driver, 10, poll_frequency=1,
@@ -100,7 +96,7 @@ class TestFilter(unittest.TestCase):
         # 6.    ***Сортировать по новизне:
         try:
             most_recent = self.driver.find_element_by_xpath(
-                "/html/body/div[1]/div[4]/div[1]/div[2]/div[1]/div[1]/div[7]/a")
+                "/html/body/div[1]/div[4]/div[1]/div[2]/div[1]/div[1]/div[7]/a3")
             self.driver.execute_script("arguments[0].scrollIntoView();", most_recent)  # Скролим до выбора сортировки
             most_recent.click()
         except Exception:
@@ -110,7 +106,6 @@ class TestFilter(unittest.TestCase):
 
         # 7.    ***Найти и кликнуть на ранее записанный товар:
         items = self.driver.find_elements_by_class_name("n-snippet-cell2")
-        # Поиск ранее запомненного телефона
         try:
             for list in items:
                 if list.get_attribute('data-id') != first:
@@ -125,9 +120,6 @@ class TestFilter(unittest.TestCase):
             self.fail("step №7")
 
     def tearDown(self):
-        self.driver.get_screenshot_as_file("ya123.png")  # Сделаем скриншот страницы
-#        log = self.driver.get_log()
-#        print(log)
         self.driver.close()
 
 
