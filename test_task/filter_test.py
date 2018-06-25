@@ -16,7 +16,7 @@ class TestFilter(unittest.TestCase):
         self.driver.implicitly_wait(10)
 
     def test_buy(self):
-        # Определим ожидание:
+        # Определим ожидание;
         wait = WebDriverWait(self.driver, 10, poll_frequency=1,
                              ignored_exceptions=[NoSuchElementException,
                                                  ElementNotVisibleException,
@@ -24,7 +24,7 @@ class TestFilter(unittest.TestCase):
         # 1.    ***Перейти по ссылке:
         self.driver.get("https://market.yandex.ru/")
 
-        # 1.1   ***Навести указатель на меню с электроникой:
+        # 1.1   ***Навести указатель на меню с электроникой;
         try:
             electronics = self.driver.find_element_by_xpath("/html/body/div[1]/div/div[2]/noindex/ul/li[1]/a")
             actions = ActionChains(self.driver)
@@ -33,7 +33,7 @@ class TestFilter(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("step №1")
 
-        # 2.    ***Кликнуть на раздел с телефонами:
+        # 2.    ***Кликнуть на раздел с телефонами;
         try:
             phone = wait.until(
                 EC.element_to_be_clickable((By.XPATH, "/html/body/div[1]/div/div[2]/noindex/ul/li[1]/div/div/a[1]")))
@@ -42,8 +42,8 @@ class TestFilter(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("step №2")
 
-        # 3.    ***Установить параметры фильтра:
-        # 3.1   ***Цена:
+        # 3.    ***Установить параметры фильтра;
+        # 3.1   ***Цена;
         try:
             priceMax = wait.until(EC.element_to_be_clickable((By.NAME, "Цена до")))
             priceMax.send_keys(u"55000")
@@ -51,7 +51,7 @@ class TestFilter(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("step №3.1")
 
-        # 3.2   ***Производитель
+        # 3.2   ***Производитель;
         try:
             element = self.driver.find_element_by_class_name("ShXb4FpS5R")
             self.driver.execute_script("arguments[0].scrollIntoView();", element)  # Скролим до выбора производителей
@@ -66,7 +66,7 @@ class TestFilter(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("step №3.2")
 
-        # 3.3   ***Диагональ экрана
+        # 3.3   ***Диагональ экрана;
         try:
             diagonally = self.driver.find_element_by_xpath(
                 "//*[@id='search-prepack']/div/div/div[2]/div/div[1]/div[6]/fieldset/legend")
@@ -79,10 +79,10 @@ class TestFilter(unittest.TestCase):
             self.fail("step №3.3")
         time.sleep(3)  # к сожаленью этот метод
 
-        # 4.    ***Проверить, что на странице 8 элементов
+        # 4.    ***Проверить, что на странице 8 элементов;
         self.assertEqual(len(self.driver.find_elements_by_class_name("n-snippet-cell2")), 8)
 
-        # 5.    ***Записать первый элемент в списке
+        # 5.    ***Записать первый элемент в списке;
         try:
             first = wait.until(
                 EC.element_to_be_clickable((
@@ -93,7 +93,7 @@ class TestFilter(unittest.TestCase):
             print(sys.exc_info()[1])
             self.fail("step №5")
         time.sleep(3)
-        # 6.    ***Сортировать по новизне:
+        # 6.    ***Сортировать по новизне;
         try:
             most_recent = self.driver.find_element_by_xpath(
                 "/html/body/div[1]/div[4]/div[1]/div[2]/div[1]/div[1]/div[7]/a3")
@@ -104,7 +104,7 @@ class TestFilter(unittest.TestCase):
             self.fail("step №6")
         time.sleep(3)
 
-        # 7.    ***Найти и кликнуть на ранее записанный товар:
+        # 7.    ***Найти и кликнуть на ранее записанный товар;
         items = self.driver.find_elements_by_class_name("n-snippet-cell2")
         try:
             for list in items:
